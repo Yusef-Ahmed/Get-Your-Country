@@ -3,6 +3,7 @@ import { fetchCountries } from "./apiClient";
 
 function App() {
   const [countries, setCountries] = useState([]);
+  const [pagination, setPagination] = useState(20);
   const [loading, setLoading] = useState(true);
   const search = useRef();
 
@@ -31,7 +32,7 @@ function App() {
   };
 
   return (
-    <main className="flex flex-col gap-20">
+    <main className="flex flex-col gap-20 items-center">
       <h1 className="text-center text-3xl md:text-5xl xl:text-7xl mt-10 font-bold">
         Get Your Country
       </h1>
@@ -55,8 +56,11 @@ function App() {
       </section>
       {countries.length ? (
         <div className="flex flex-wrap justify-around gap-y-10">
-          {countries.map((country, index) => (
-            <div key={index} className="w-xs border p-2 rounded-md hover:-translate-y-3 duration-100">
+          {countries.slice(0, pagination).map((country, index) => (
+            <div
+              key={index}
+              className="w-xs border p-2 rounded-md hover:-translate-y-3 duration-100"
+            >
               <h1 className="text-center text-2xl my-3">
                 {country.name.common}
               </h1>
@@ -94,8 +98,16 @@ function App() {
           ))}
         </div>
       ) : (
-        <h2 className="text-center text-4xl">{loading ? "Loading..." : "No countries found"}</h2>
+        <h2 className="text-center text-4xl">
+          {loading ? "Loading..." : "No countries found"}
+        </h2>
       )}
+      {countries.length > pagination &&<button
+        className="w-fit bg-purple-800 py-3 px-5 rounded cursor-pointer will-change-transform active:scale-95 hover:scale-105 duration-100"
+        onClick={() => setPagination((prev) => prev + 20)}
+      >
+        Show More
+      </button>}
     </main>
   );
 }
